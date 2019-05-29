@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+       <title>HostNameOrURL MetaData Fetcher</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+</head>
+    
+<body>
+
+</br>
+</br>
+
+<table id="myData" cellpadding="2" cellspacing="2" border="1" ">
+  
+</table>
+
+<script type="text/javascript">
+
+var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = window.location.search.substring(1),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+        }
+    }
+};
+
+window.onload = function() {
+	
+            	  var urlId = getUrlParameter('id').replace(/[&\/\\#,+()$~%.'":*?<>{}]/g,'');
+                        	 $.ajax({
+                                 type: 'GET',
+                                 url: 'http://localhost:8089/url?id='+urlId,
+                                 data: $('#urlDetail').serialize(),	
+                                 success: function(data){
+                                	 $("#myData").empty();
+                                	 var row1 = $("<tr><th>URL</th><th>Redirection URL</th><th>Submitted On</th><th>Website Title</th><th>Website Body Content</th><th>Image Count</th><th>Link Count</th></tr>");
+                                     $("#myData").append(row1);
+                                     $.each(data, function( index, value ) {
+                                    	 var row = $("<tr><td>" + value.url + "</td><td>" + value.redirectionUrl + "</td><td>" + value.submittedOn + "</td><td>" + value.websiteTitle + "</td><td>" + value.websiteBodyContent + "</td><td>" + value.imageCount + "</td><td>" + value.linkCount + "</td></tr>");
+                                    	 $("#myData").append(row); 
+                                     });
+                                     
+                                 },
+                                 error: function(jqXHR, textStatus, errorThrown){
+                                     alert('error: ' + textStatus + ': ' + errorThrown);
+                                 }
+                        	 });
+                   return false;//suppress natural form submission
+                }; 
+
+   </script>
+        
+</body>
+
+</html>

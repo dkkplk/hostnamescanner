@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+       <title>HostNameOrURL MetaData Fetcher</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        
+        <style>
+.button {
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+.div1 {
+  width: 800px;
+  height: 50px;
+  border: 1px solid blue;
+  box-sizing: border-box;
+}
+</style>
+</head>
+    
+<body>
+<h1>Please Enter Url Below</h1>
+<form action="">
+  
+  <input id="url" class="div1" type="text" name="url" value="" size="100">
+  
+  <input id="search" class="button" type="submit" value="Submit">
+</form>
+</br>
+</br>
+
+ <table id="myData" cellpadding="2" cellspacing="2" border="1">
+<thead>
+        <tr>
+    <th>URL</th>
+    <th>Scan Status</th> 
+    <th>Ip Address</th>
+    <th>Website Title</th>
+    <th>Submitted On</th>
+        </tr>
+    </thead>
+ </table>
+
+<script type="text/javascript">
+              $('#search').click(function() {
+            	                   
+                    var textboxvalue = $('input[name=url]').val();
+                    $.ajax({
+                        type: 'POST',
+                        url: 'http://localhost:8089/submit?url='+textboxvalue,
+                        success: function(){ 
+                        	 $.ajax({
+                                 type: 'GET',
+                                 url: 'http://localhost:8089/list?urlCount=0&startDate=&endDate=',
+                                 data: $('#urlDetails').serialize(),
+										
+                                 success: function(data){
+                                	 $("#myData").empty();
+                                	 var row1 = $("<tr><th>URL</th><th>Scan Status</th><th>Ip Address</th><th>Website Title</th><th>Submitted On</th></tr>");
+                                     $("#myData").append(row1);
+                                     $.each(data, function( index, value ) {
+                                        
+                                    	 var row = $("<tr><td>"+'<a href=UrlMetaData.html?id="' + value.id + '">'+value.url+'</a>'+"</td><td>" + value.scanStatus + "</td><td>" + value.ipAddress + "</td><td>" + value.websiteTitle + "</td><td>" + value.submittedOn + "</td></tr>");
+                                    	 
+                                        $("#myData").append(row);
+                                     });
+                                     
+                                 },
+                                 error: function(jqXHR, textStatus, errorThrown){
+                                     alert('error: ' + textStatus + ': ' + errorThrown);
+                                 }
+                             });
+                        },
+                        error: function(jqXHR, textStatus, errorThrown){
+                            alert('error: ' + textStatus + ': ' + errorThrown);
+                        }
+                    });
+                    
+                   
+                    return false;//suppress natural form submission
+                }); 
+
+   </script>
+</body>
+
+</html>
